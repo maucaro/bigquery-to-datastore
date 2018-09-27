@@ -57,6 +57,11 @@ public class BigQuery2Datastore {
     @Description("Indexed columns (format: 'column1,column2,column3')")
     String getIndexedColumns();
     void setIndexedColumns(String indexedColumns);
+
+    @Description("Maps API Key")
+    @Validation.Required
+    String getMapsApiKey();
+    void setMapsApiKey(String mapsApiKey);
   }
 
   public static void main(String[] args) {
@@ -68,6 +73,7 @@ public class BigQuery2Datastore {
     String namespace = options.getOutputDatastoreNamespace();
     String kind = options.getOutputDatastoreKind();
     String keyColumn = options.getKeyColumn();
+    String mapsApiKey = options.getMapsApiKey();
     LinkedHashMap<String, String> parents = parseParentPaths(options.getParentPaths());
     List<String> indexedColumns = parseIndexedColumns(options.getIndexedColumns());
 
@@ -80,11 +86,14 @@ public class BigQuery2Datastore {
 
     // Build and run pipeline
     TableRow2EntityFn fn =
-        new TableRow2EntityFn(projectId, namespace, parents, kind, keyColumn, indexedColumns);
+        new TableRow2EntityFn(projectId, namespace, parents, kind, keyColumn, indexedColumns);    
+    EnhanceGeoFn fn2 =
+        new EnhanceGeoFn(projectId, namespace, parents, kind, keyColumn, indexedColumns, mapsApiKey);
     Pipeline pipeline = Pipeline.create(options);
     pipeline
         .apply(reader)
-        .apply(ParDo.of(fn))
+        .apply(ParDo.of(fn))        
+        .apply(ParDo.of(fn2))
         .apply(writer);
     pipeline.run();
   }
