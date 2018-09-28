@@ -27,6 +27,7 @@ Apache Beam's `DatastoreIO` doesn't allow us to write same key at once.
 - `--outputDatastoreKind`: OUtput Google Datastore kind
 - `--tempLocation`: The Cloud Storage path to use for temporary files. Must be a valid Cloud Storage URL, beginning with `gs://`.
 - `--gcpTempLocation`: A GCS path for storing temporary files in GCP.
+- `--mapsApiKey=`: Google Maps Geocoding Server API key
 
 ### Optional arguments
 - `--runner`: Apache Beam runner.
@@ -58,7 +59,8 @@ java -cp $(pwd)/target/bigquery-to-datastore-bundled-0.5.1.jar \
   --keyColumn=id \
   --indexedColumns=col1,col2,col3 \
   --tempLocation=gs://test_bucket/test-log/ \
-  --gcpTempLocation=gs://test_bucket/test-log/
+  --gcpTempLocation=gs://test_bucket/test-log/ \
+  --mapsApiKey=Google_Maps_Geocoding_Server_API_key
 ```
 
 ## How to run
